@@ -1,0 +1,73 @@
+{
+  "input_mode": "description",
+  "target_name": "example-app",
+  "description": "A tenant-isolated document API with an external identity provider.",
+  "requested_outputs": ["dfd", "attack_tree", "mitigations", "dread", "tests"],
+  "scope": [
+    {
+      "name": "API",
+      "description": "Document access",
+      "key_files": [],
+      "focus_areas": ["Spoofing", "Information Disclosure"]
+    }
+  ],
+  "findings": [
+    {
+      "subsystem": "API",
+      "outcome": "completed",
+      "notes": [
+        "Illustrative fixture, not an actual system assessment.",
+        "All six STRIDE categories considered; only the illustrative session threat is retained."
+      ],
+      "files_analyzed": [],
+      "threats": [
+        {
+          "id": "STRIDE-001",
+          "category": "Spoofing",
+          "scenario": "A stolen session could be replayed.",
+          "impact": "Unauthorized document access.",
+          "basis": "hypothesis",
+          "evidence": [],
+          "assumptions": ["Replay defenses are unspecified."],
+          "mappings": {}
+        }
+      ]
+    }
+  ],
+  "cross_cutting_threats": [],
+  "observations": [
+    {
+      "summary": "Identity is an external trust dependency.",
+      "related_threats": ["STRIDE-001"]
+    }
+  ],
+  "assumptions": ["Description-only illustrative input, not a production assessment."],
+  "exclusions": ["Live infrastructure"],
+  "limitations": [],
+  "references_loaded": [],
+  "synthesis_status": "completed",
+  "dfd": "flowchart LR\n  user[\"User\"] -->|Document request| api\n  subgraph app[\"Application trust boundary\"]\n    api[\"API\"]\n  end\n  api -->|Validate identity| idp[\"External IdP\"]\n  idp -->|Identity assertion| api",
+  "attack_tree": "flowchart TD\n  goal[\"Impersonate a user\"] --> both[\"AND\"]\n  both --> stolen[\"Assumption: attacker obtains session\"]\n  both --> replay[\"STRIDE-001: session accepted on replay\"]",
+  "mitigations": [
+    {
+      "threat_id": "STRIDE-001",
+      "text": "API: revoke compromised sessions and enforce bounded session lifetimes. Verify revoked and expired sessions are rejected at every protected route. Session theft before revocation remains a residual risk; actual session controls need confirmation."
+    }
+  ],
+  "dread": [
+    {
+      "threat_id": "STRIDE-001",
+      "damage": {"score": 8, "rationale": "Confidential document access is serious, assuming a compromised user can read sensitive files."},
+      "reproducibility": {"score": 6, "rationale": "Replay could be repeatable while a stolen session remains valid; actual defenses are unspecified."},
+      "exploitability": {"score": 4, "rationale": "Obtaining a session is a prerequisite; this example does not establish how easy that is."},
+      "affected_users": {"score": 2, "rationale": "Assume one user's session is compromised and tenant isolation otherwise holds."},
+      "discoverability": {"score": 5, "rationale": "An authenticated attacker could investigate session behavior; deployment details are unknown."}
+    }
+  ],
+  "tests": [
+    {
+      "threat_id": "STRIDE-001",
+      "text": "Scenario: Revoked session is rejected\n  Given a revoked session belonging to a document owner\n  When a document is requested with that session\n  Then access is denied and no document content is returned\n\nScenario: Tenant boundary remains enforced\n  Given an active session for a user in tenant A\n  When a document in tenant B is requested\n  Then access is denied without revealing document metadata"
+    }
+  ]
+}
