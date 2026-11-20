@@ -4,12 +4,13 @@ Orientation for agents (and humans) working in this codebase. Skim the whole fil
 
 ## What this project is
 
-STRIDE-GPT is an AI-powered threat modelling tool that produces STRIDE reports for software systems. It ships as **two separate products** with a shared library between them:
+STRIDE-GPT is an AI-powered threat modelling tool that produces STRIDE reports for software systems. This fork adds a **Claude-native workflow** alongside the two original Python interfaces:
 
-- **CLI** (`stride_gpt/`) — the primary product. Includes an **agentic analysis engine** that explores a real codebase via filesystem tools and produces a per-subsystem STRIDE report.
+- **Claude Code in Desktop** (`.claude/`, `CLAUDE.md`): the primary interface in this fork. Project skills coordinate read-only architecture, subsystem, and synthesis agents in the signed-in Claude session. See `docs/claude-desktop.md`. The optional `stride_gpt/desktop.py` helper validates and renders local artifacts without making model calls.
+- **CLI** (`stride_gpt/`): optional original interface. Includes an **agentic analysis engine** that explores a real codebase via filesystem tools and produces a per-subsystem STRIDE report.
 - **Streamlit web UI** (`apps/web/`) — a hosted single-shot threat modeller. Takes a text description (or a GitHub URL) and produces a one-shot report. **Does not use the agentic engine**, by design — filesystem/agentic features don't fit Streamlit Community Cloud-style deployments.
 
-Both surfaces share `stride_gpt/core/` for prompts, schemas, and the LLM abstraction.
+The Python interfaces share `stride_gpt/core/` for prompts, schemas, and the LLM abstraction. The native workflow reuses reference cards and offline reporting utilities, not the Python agent loop or LLM abstraction. Its shared execution and artifact contract is `.claude/skills/stride-model/contract.md`. Preserve the existing CLI and web behavior.
 
 ## Repository layout
 
@@ -145,7 +146,7 @@ The pattern is decoupled from threat modelling. The recipe:
 
 ## LLM provider abstraction
 
-Everything goes through `stride_gpt/core/llm.py` — `call_llm`, `call_llm_with_tools`, `call_llm_with_image`. Under the hood these use `litellm.completion` with provider-aware kwargs assembled in `_build_litellm_kwargs`. **Never call `litellm.completion` directly** from outside `core/llm.py` — that's how provider-specific quirks leak across the codebase.
+All Python-interface model calls go through `stride_gpt/core/llm.py` — `call_llm`, `call_llm_with_tools`, `call_llm_with_image`. Under the hood these use `litellm.completion` with provider-aware kwargs assembled in `_build_litellm_kwargs`. **Never call `litellm.completion` directly** from outside `core/llm.py` — that's how provider-specific quirks leak across the codebase.
 
 Models are registered in `stride_gpt/models.py` with provider, default tokens, max tokens, and capability flags (`supports_thinking`, etc.).
 

@@ -20,4 +20,7 @@ test-optimization.html
 
 # Local tooling artifacts
 .coverage
-.claude/
+.claude/*
+!.claude/agents/
+!.claude/skills/
+.stride-reports/

@@ -4,7 +4,35 @@
 
 STRIDE GPT is an AI-powered threat modelling tool that leverages Large Language Models (LLMs) to generate threat models and attack trees for a given application based on the STRIDE methodology. Users provide application details, such as the application type, authentication methods, and whether the application is internet-facing or processes sensitive data. The model then generates its output based on the provided information.
 
+## Claude Desktop quick start
+
+This fork makes **Claude Code in Claude Desktop** the primary interface, using
+repository agents and skills in your signed-in Claude session. No separate API
+key, Python installation, or server is required to generate draft reports.
+The original CLI and web app remain available below as optional fallbacks.
+
+1. Clone this fork: `git clone https://github.com/zmatthiesen/stride-gpt.git`.
+2. In Claude Desktop, select **Code**, start a **Local** session, and open the
+   cloned folder. Use the main checkout for the simplest setup.
+3. Enter `/stride-model` followed by a sanitized system description, or add an
+   authorized target folder as described in the [Desktop guide](docs/claude-desktop.md)
+   and provide its absolute path.
+4. Review the proposed scope and explicitly approve it before subsystem analysis.
+
+The workflow produces STRIDE findings, a Mermaid DFD and attack tree,
+mitigations, DREAD assessments, and proposed Gherkin scenarios. Reports are
+saved locally under `.stride-reports/`, which is ignored by Git. An optional
+offline Python helper validates structured reports and rechecks code citations.
+Without that helper, reports are clearly labeled **unvalidated drafts**.
+
+See the [setup, examples, and acceptance checklist](docs/claude-desktop.md).
+These definitions are for Claude Code, not Desktop Chat or Cowork uploads.
+This adaptation retains the MIT license and attribution to the original
+STRIDE-GPT project by Matt Adams. The changelog and Python installation
+instructions below describe the retained upstream interfaces.
+
 ## Table of Contents
+- [Claude Desktop quick start](#claude-desktop-quick-start)
 - [Support the Project](#support-the-project)
 - [Features](#features)
 - [Enterprise Deployment](#enterprise-deployment)
@@ -50,7 +78,7 @@ If you find STRIDE GPT useful, please consider supporting the project:
 - Multiple output formats: Markdown, JSON, SARIF (imports into GitHub, GitLab, Azure DevOps, IDEs), and a self-contained HTML view for sharing with stakeholders
 - Current model support (OpenAI GPT-6 series, Anthropic Claude Opus 5.5 and 4.8, Google Gemini 3.x with thinking on by default)
 - Comprehensive LLM provider support via LiteLLM: OpenAI, Anthropic, Google AI, Mistral, Groq, DeepSeek, plus local hosting via LM Studio Server
-- No data storage; application details are not saved
+- The original web app does not save application details; the Claude-native workflow saves local reports and follows your Claude session's data policies
 - Available as a Docker container image for easy deployment
 - Environment variable support for secure configuration
 
