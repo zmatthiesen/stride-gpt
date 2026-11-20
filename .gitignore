@@ -22,5 +22,5 @@ test-optimization.html
 .coverage
 .claude/*
 !.claude/agents/
-!.claude/skills/
+!.claude/skills
 .stride-reports/

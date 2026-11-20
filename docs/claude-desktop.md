@@ -276,3 +276,7 @@ Official references:
 [skills](https://code.claude.com/docs/en/skills),
 [subagents](https://code.claude.com/docs/en/sub-agents), and
 [additional directories](https://code.claude.com/docs/en/large-codebases).
+
+## Skills directory
+
+The seven skills live in the top-level `skills/` directory. `.claude/skills` is a symlink to it so Claude Code still discovers them. On Windows, enable symlinks (`git config core.symlinks true` and Developer Mode) or copy `skills/*` into `.claude/skills/`.

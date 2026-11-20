@@ -2,7 +2,7 @@
 
 Read `AGENTS.md` for repository architecture and contributor guidance. In this
 fork the primary user interface is Claude Code in Claude Desktop, through
-`.claude/skills/` and `.claude/agents/`. The original CLI and web UI are optional
+`skills/` (exposed to Claude Code through the `.claude/skills` symlink) and `.claude/agents/`. The original CLI and web UI are optional
 fallbacks; do not change their behavior to implement a native skill.
 
 For threat modeling, start with `/stride-model`. The shared workflow contract is
